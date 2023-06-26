@@ -186,176 +186,176 @@ registerAction2(class ExecuteNotebookAction extends NotebookAction {
 	}
 });
 
-registerAction2(class ExecuteCell extends NotebookMultiCellAction {
-	constructor() {
-		super({
-			id: EXECUTE_CELL_COMMAND_ID,
-			precondition: executeThisCellCondition,
-			title: localize('notebookActions.execute', "Execute Cell"),
-			keybinding: {
-				when: NOTEBOOK_CELL_LIST_FOCUSED,
-				primary: KeyMod.WinCtrl | KeyCode.Enter,
-				win: {
-					primary: KeyMod.CtrlCmd | KeyMod.Alt | KeyCode.Enter
-				},
-				weight: NOTEBOOK_EDITOR_WIDGET_ACTION_WEIGHT
-			},
-			menu: {
-				id: MenuId.NotebookCellExecutePrimary,
-				when: executeThisCellCondition,
-				group: 'inline'
-			},
-			description: {
-				description: localize('notebookActions.execute', "Execute Cell"),
-				args: cellExecutionArgs
-			},
-			icon: icons.executeIcon
-		});
-	}
+// registerAction2(class ExecuteCell extends NotebookMultiCellAction {
+// 	constructor() {
+// 		super({
+// 			id: EXECUTE_CELL_COMMAND_ID,
+// 			precondition: executeThisCellCondition,
+// 			title: localize('notebookActions.execute', "Execute Cell"),
+// 			keybinding: {
+// 				when: NOTEBOOK_CELL_LIST_FOCUSED,
+// 				primary: KeyMod.WinCtrl | KeyCode.Enter,
+// 				win: {
+// 					primary: KeyMod.CtrlCmd | KeyMod.Alt | KeyCode.Enter
+// 				},
+// 				weight: NOTEBOOK_EDITOR_WIDGET_ACTION_WEIGHT
+// 			},
+// 			menu: {
+// 				id: MenuId.NotebookCellExecutePrimary,
+// 				when: executeThisCellCondition,
+// 				group: 'inline'
+// 			},
+// 			description: {
+// 				description: localize('notebookActions.execute', "Execute Cell"),
+// 				args: cellExecutionArgs
+// 			},
+// 			icon: icons.executeIcon
+// 		});
+// 	}
 
-	override parseArgs(accessor: ServicesAccessor, ...args: any[]): INotebookCommandContext | undefined {
-		return parseMultiCellExecutionArgs(accessor, ...args);
-	}
+// 	override parseArgs(accessor: ServicesAccessor, ...args: any[]): INotebookCommandContext | undefined {
+// 		return parseMultiCellExecutionArgs(accessor, ...args);
+// 	}
 
-	async runWithContext(accessor: ServicesAccessor, context: INotebookCommandContext | INotebookCellToolbarActionContext): Promise<void> {
-		const editorGroupsService = accessor.get(IEditorGroupsService);
+// 	async runWithContext(accessor: ServicesAccessor, context: INotebookCommandContext | INotebookCellToolbarActionContext): Promise<void> {
+// 		const editorGroupsService = accessor.get(IEditorGroupsService);
 
-		if (context.ui) {
-			await context.notebookEditor.focusNotebookCell(context.cell, 'container', { skipReveal: true });
-		}
+// 		if (context.ui) {
+// 			await context.notebookEditor.focusNotebookCell(context.cell, 'container', { skipReveal: true });
+// 		}
 
-		await runCell(editorGroupsService, context);
-	}
-});
+// 		await runCell(editorGroupsService, context);
+// 	}
+// });
 
-registerAction2(class ExecuteAboveCells extends NotebookMultiCellAction {
-	constructor() {
-		super({
-			id: EXECUTE_CELLS_ABOVE,
-			precondition: executeCondition,
-			title: localize('notebookActions.executeAbove', "Execute Above Cells"),
-			menu: [
-				{
-					id: MenuId.NotebookCellExecute,
-					when: ContextKeyExpr.and(
-						executeCondition,
-						ContextKeyExpr.equals(`config.${NotebookSetting.consolidatedRunButton}`, true))
-				},
-				{
-					id: MenuId.NotebookCellTitle,
-					order: CellToolbarOrder.ExecuteAboveCells,
-					group: CELL_TITLE_CELL_GROUP_ID,
-					when: ContextKeyExpr.and(
-						executeCondition,
-						ContextKeyExpr.equals(`config.${NotebookSetting.consolidatedRunButton}`, false))
-				}
-			],
-			icon: icons.executeAboveIcon
-		});
-	}
+// registerAction2(class ExecuteAboveCells extends NotebookMultiCellAction {
+// 	constructor() {
+// 		super({
+// 			id: EXECUTE_CELLS_ABOVE,
+// 			precondition: executeCondition,
+// 			title: localize('notebookActions.executeAbove', "Execute Above Cells"),
+// 			menu: [
+// 				{
+// 					id: MenuId.NotebookCellExecute,
+// 					when: ContextKeyExpr.and(
+// 						executeCondition,
+// 						ContextKeyExpr.equals(`config.${NotebookSetting.consolidatedRunButton}`, true))
+// 				},
+// 				{
+// 					id: MenuId.NotebookCellTitle,
+// 					order: CellToolbarOrder.ExecuteAboveCells,
+// 					group: CELL_TITLE_CELL_GROUP_ID,
+// 					when: ContextKeyExpr.and(
+// 						executeCondition,
+// 						ContextKeyExpr.equals(`config.${NotebookSetting.consolidatedRunButton}`, false))
+// 				}
+// 			],
+// 			icon: icons.executeAboveIcon
+// 		});
+// 	}
 
-	override parseArgs(accessor: ServicesAccessor, ...args: any[]): INotebookCommandContext | undefined {
-		return parseMultiCellExecutionArgs(accessor, ...args);
-	}
+// 	override parseArgs(accessor: ServicesAccessor, ...args: any[]): INotebookCommandContext | undefined {
+// 		return parseMultiCellExecutionArgs(accessor, ...args);
+// 	}
 
-	async runWithContext(accessor: ServicesAccessor, context: INotebookCommandContext | INotebookCellToolbarActionContext): Promise<void> {
-		let endCellIdx: number | undefined = undefined;
-		if (context.ui) {
-			endCellIdx = context.notebookEditor.getCellIndex(context.cell);
-			await context.notebookEditor.focusNotebookCell(context.cell, 'container', { skipReveal: true });
-		} else {
-			endCellIdx = Math.min(...context.selectedCells.map(cell => context.notebookEditor.getCellIndex(cell)));
-		}
+// 	async runWithContext(accessor: ServicesAccessor, context: INotebookCommandContext | INotebookCellToolbarActionContext): Promise<void> {
+// 		let endCellIdx: number | undefined = undefined;
+// 		if (context.ui) {
+// 			endCellIdx = context.notebookEditor.getCellIndex(context.cell);
+// 			await context.notebookEditor.focusNotebookCell(context.cell, 'container', { skipReveal: true });
+// 		} else {
+// 			endCellIdx = Math.min(...context.selectedCells.map(cell => context.notebookEditor.getCellIndex(cell)));
+// 		}
 
-		if (typeof endCellIdx === 'number') {
-			const range = { start: 0, end: endCellIdx };
-			const cells = context.notebookEditor.getCellsInRange(range);
-			context.notebookEditor.executeNotebookCells(cells);
-		}
-	}
-});
+// 		if (typeof endCellIdx === 'number') {
+// 			const range = { start: 0, end: endCellIdx };
+// 			const cells = context.notebookEditor.getCellsInRange(range);
+// 			context.notebookEditor.executeNotebookCells(cells);
+// 		}
+// 	}
+// });
 
-registerAction2(class ExecuteCellAndBelow extends NotebookMultiCellAction {
-	constructor() {
-		super({
-			id: EXECUTE_CELL_AND_BELOW,
-			precondition: executeCondition,
-			title: localize('notebookActions.executeBelow', "Execute Cell and Below"),
-			menu: [
-				{
-					id: MenuId.NotebookCellExecute,
-					when: ContextKeyExpr.and(
-						executeCondition,
-						ContextKeyExpr.equals(`config.${NotebookSetting.consolidatedRunButton}`, true))
-				},
-				{
-					id: MenuId.NotebookCellTitle,
-					order: CellToolbarOrder.ExecuteCellAndBelow,
-					group: CELL_TITLE_CELL_GROUP_ID,
-					when: ContextKeyExpr.and(
-						executeCondition,
-						ContextKeyExpr.equals(`config.${NotebookSetting.consolidatedRunButton}`, false))
-				}
-			],
-			icon: icons.executeBelowIcon
-		});
-	}
+// registerAction2(class ExecuteCellAndBelow extends NotebookMultiCellAction {
+// 	constructor() {
+// 		super({
+// 			id: EXECUTE_CELL_AND_BELOW,
+// 			precondition: executeCondition,
+// 			title: localize('notebookActions.executeBelow', "Execute Cell and Below"),
+// 			menu: [
+// 				{
+// 					id: MenuId.NotebookCellExecute,
+// 					when: ContextKeyExpr.and(
+// 						executeCondition,
+// 						ContextKeyExpr.equals(`config.${NotebookSetting.consolidatedRunButton}`, true))
+// 				},
+// 				{
+// 					id: MenuId.NotebookCellTitle,
+// 					order: CellToolbarOrder.ExecuteCellAndBelow,
+// 					group: CELL_TITLE_CELL_GROUP_ID,
+// 					when: ContextKeyExpr.and(
+// 						executeCondition,
+// 						ContextKeyExpr.equals(`config.${NotebookSetting.consolidatedRunButton}`, false))
+// 				}
+// 			],
+// 			icon: icons.executeBelowIcon
+// 		});
+// 	}
 
-	override parseArgs(accessor: ServicesAccessor, ...args: any[]): INotebookCommandContext | undefined {
-		return parseMultiCellExecutionArgs(accessor, ...args);
-	}
+// 	override parseArgs(accessor: ServicesAccessor, ...args: any[]): INotebookCommandContext | undefined {
+// 		return parseMultiCellExecutionArgs(accessor, ...args);
+// 	}
 
-	async runWithContext(accessor: ServicesAccessor, context: INotebookCommandContext | INotebookCellToolbarActionContext): Promise<void> {
-		let startCellIdx: number | undefined = undefined;
-		if (context.ui) {
-			startCellIdx = context.notebookEditor.getCellIndex(context.cell);
-			await context.notebookEditor.focusNotebookCell(context.cell, 'container', { skipReveal: true });
-		} else {
-			startCellIdx = Math.min(...context.selectedCells.map(cell => context.notebookEditor.getCellIndex(cell)));
-		}
+// 	async runWithContext(accessor: ServicesAccessor, context: INotebookCommandContext | INotebookCellToolbarActionContext): Promise<void> {
+// 		let startCellIdx: number | undefined = undefined;
+// 		if (context.ui) {
+// 			startCellIdx = context.notebookEditor.getCellIndex(context.cell);
+// 			await context.notebookEditor.focusNotebookCell(context.cell, 'container', { skipReveal: true });
+// 		} else {
+// 			startCellIdx = Math.min(...context.selectedCells.map(cell => context.notebookEditor.getCellIndex(cell)));
+// 		}
 
-		if (typeof startCellIdx === 'number') {
-			const range = { start: startCellIdx, end: context.notebookEditor.getLength() };
-			const cells = context.notebookEditor.getCellsInRange(range);
-			context.notebookEditor.executeNotebookCells(cells);
-		}
-	}
-});
+// 		if (typeof startCellIdx === 'number') {
+// 			const range = { start: startCellIdx, end: context.notebookEditor.getLength() };
+// 			const cells = context.notebookEditor.getCellsInRange(range);
+// 			context.notebookEditor.executeNotebookCells(cells);
+// 		}
+// 	}
+// });
 
-registerAction2(class ExecuteCellFocusContainer extends NotebookMultiCellAction {
-	constructor() {
-		super({
-			id: EXECUTE_CELL_FOCUS_CONTAINER_COMMAND_ID,
-			precondition: executeThisCellCondition,
-			title: localize('notebookActions.executeAndFocusContainer', "Execute Cell and Focus Container"),
-			description: {
-				description: localize('notebookActions.executeAndFocusContainer', "Execute Cell and Focus Container"),
-				args: cellExecutionArgs
-			},
-			icon: icons.executeIcon
-		});
-	}
+// registerAction2(class ExecuteCellFocusContainer extends NotebookMultiCellAction {
+// 	constructor() {
+// 		super({
+// 			id: EXECUTE_CELL_FOCUS_CONTAINER_COMMAND_ID,
+// 			precondition: executeThisCellCondition,
+// 			title: localize('notebookActions.executeAndFocusContainer', "Execute Cell and Focus Container"),
+// 			description: {
+// 				description: localize('notebookActions.executeAndFocusContainer', "Execute Cell and Focus Container"),
+// 				args: cellExecutionArgs
+// 			},
+// 			icon: icons.executeIcon
+// 		});
+// 	}
 
-	override parseArgs(accessor: ServicesAccessor, ...args: any[]): INotebookCommandContext | undefined {
-		return parseMultiCellExecutionArgs(accessor, ...args);
-	}
+// 	override parseArgs(accessor: ServicesAccessor, ...args: any[]): INotebookCommandContext | undefined {
+// 		return parseMultiCellExecutionArgs(accessor, ...args);
+// 	}
 
-	async runWithContext(accessor: ServicesAccessor, context: INotebookCommandContext | INotebookCellToolbarActionContext): Promise<void> {
-		const editorGroupsService = accessor.get(IEditorGroupsService);
+// 	async runWithContext(accessor: ServicesAccessor, context: INotebookCommandContext | INotebookCellToolbarActionContext): Promise<void> {
+// 		const editorGroupsService = accessor.get(IEditorGroupsService);
 
-		if (context.ui) {
-			await context.notebookEditor.focusNotebookCell(context.cell, 'container', { skipReveal: true });
-		} else {
-			const firstCell = context.selectedCells[0];
+// 		if (context.ui) {
+// 			await context.notebookEditor.focusNotebookCell(context.cell, 'container', { skipReveal: true });
+// 		} else {
+// 			const firstCell = context.selectedCells[0];
 
-			if (firstCell) {
-				await context.notebookEditor.focusNotebookCell(firstCell, 'container', { skipReveal: true });
-			}
-		}
+// 			if (firstCell) {
+// 				await context.notebookEditor.focusNotebookCell(firstCell, 'container', { skipReveal: true });
+// 			}
+// 		}
 
-		await runCell(editorGroupsService, context);
-	}
-});
+// 		await runCell(editorGroupsService, context);
+// 	}
+// });
 
 const cellCancelCondition = ContextKeyExpr.or(
 	ContextKeyExpr.equals(NOTEBOOK_CELL_EXECUTION_STATE.key, 'executing'),
@@ -427,94 +427,94 @@ registerAction2(class CancelExecuteCell extends NotebookMultiCellAction {
 	}
 });
 
-registerAction2(class ExecuteCellSelectBelow extends NotebookCellAction {
-	constructor() {
-		super({
-			id: EXECUTE_CELL_SELECT_BELOW,
-			precondition: ContextKeyExpr.or(executeThisCellCondition, NOTEBOOK_CELL_TYPE.isEqualTo('markup')),
-			title: localize('notebookActions.executeAndSelectBelow', "Execute Notebook Cell and Select Below"),
-			keybinding: {
-				when: ContextKeyExpr.and(
-					NOTEBOOK_CELL_LIST_FOCUSED,
-					CTX_INLINE_CHAT_FOCUSED.negate()
-				),
-				primary: KeyMod.Shift | KeyCode.Enter,
-				weight: NOTEBOOK_EDITOR_WIDGET_ACTION_WEIGHT
-			},
-		});
-	}
+// registerAction2(class ExecuteCellSelectBelow extends NotebookCellAction {
+// 	constructor() {
+// 		super({
+// 			id: EXECUTE_CELL_SELECT_BELOW,
+// 			precondition: ContextKeyExpr.or(executeThisCellCondition, NOTEBOOK_CELL_TYPE.isEqualTo('markup')),
+// 			title: localize('notebookActions.executeAndSelectBelow', "Execute Notebook Cell and Select Below"),
+// 			keybinding: {
+// 				when: ContextKeyExpr.and(
+// 					NOTEBOOK_CELL_LIST_FOCUSED,
+// 					CTX_INLINE_CHAT_FOCUSED.negate()
+// 				),
+// 				primary: KeyMod.Shift | KeyCode.Enter,
+// 				weight: NOTEBOOK_EDITOR_WIDGET_ACTION_WEIGHT
+// 			},
+// 		});
+// 	}
 
-	async runWithContext(accessor: ServicesAccessor, context: INotebookCellActionContext): Promise<void> {
-		const editorGroupsService = accessor.get(IEditorGroupsService);
-		const idx = context.notebookEditor.getCellIndex(context.cell);
-		if (typeof idx !== 'number') {
-			return;
-		}
-		const languageService = accessor.get(ILanguageService);
+// 	async runWithContext(accessor: ServicesAccessor, context: INotebookCellActionContext): Promise<void> {
+// 		const editorGroupsService = accessor.get(IEditorGroupsService);
+// 		const idx = context.notebookEditor.getCellIndex(context.cell);
+// 		if (typeof idx !== 'number') {
+// 			return;
+// 		}
+// 		const languageService = accessor.get(ILanguageService);
 
-		if (context.cell.cellKind === CellKind.Markup) {
-			const nextCell = context.notebookEditor.cellAt(idx + 1);
-			context.cell.updateEditState(CellEditState.Preview, EXECUTE_CELL_SELECT_BELOW);
-			if (nextCell) {
-				await context.notebookEditor.focusNotebookCell(nextCell, 'container', { minimalScrolling: true });
-			} else {
-				const newCell = insertCell(languageService, context.notebookEditor, idx, CellKind.Markup, 'below');
+// 		if (context.cell.cellKind === CellKind.Markup) {
+// 			const nextCell = context.notebookEditor.cellAt(idx + 1);
+// 			context.cell.updateEditState(CellEditState.Preview, EXECUTE_CELL_SELECT_BELOW);
+// 			if (nextCell) {
+// 				await context.notebookEditor.focusNotebookCell(nextCell, 'container', { minimalScrolling: true });
+// 			} else {
+// 				const newCell = insertCell(languageService, context.notebookEditor, idx, CellKind.Markup, 'below');
 
-				if (newCell) {
-					await context.notebookEditor.focusNotebookCell(newCell, 'editor', { minimalScrolling: true });
-				}
-			}
-			return;
-		} else {
-			// Try to select below, fall back on inserting
-			const nextCell = context.notebookEditor.cellAt(idx + 1);
-			if (nextCell) {
-				await context.notebookEditor.focusNotebookCell(nextCell, 'container', { minimalScrolling: true });
-			} else {
-				const newCell = insertCell(languageService, context.notebookEditor, idx, CellKind.Code, 'below');
+// 				if (newCell) {
+// 					await context.notebookEditor.focusNotebookCell(newCell, 'editor', { minimalScrolling: true });
+// 				}
+// 			}
+// 			return;
+// 		} else {
+// 			// Try to select below, fall back on inserting
+// 			const nextCell = context.notebookEditor.cellAt(idx + 1);
+// 			if (nextCell) {
+// 				await context.notebookEditor.focusNotebookCell(nextCell, 'container', { minimalScrolling: true });
+// 			} else {
+// 				const newCell = insertCell(languageService, context.notebookEditor, idx, CellKind.Code, 'below');
 
-				if (newCell) {
-					await context.notebookEditor.focusNotebookCell(newCell, 'editor', { minimalScrolling: true });
-				}
-			}
+// 				if (newCell) {
+// 					await context.notebookEditor.focusNotebookCell(newCell, 'editor', { minimalScrolling: true });
+// 				}
+// 			}
 
-			return runCell(editorGroupsService, context);
-		}
-	}
-});
+// 			return runCell(editorGroupsService, context);
+// 		}
+// 	}
+// });
 
-registerAction2(class ExecuteCellInsertBelow extends NotebookCellAction {
-	constructor() {
-		super({
-			id: EXECUTE_CELL_INSERT_BELOW,
-			precondition: ContextKeyExpr.or(executeThisCellCondition, NOTEBOOK_CELL_TYPE.isEqualTo('markup')),
-			title: localize('notebookActions.executeAndInsertBelow', "Execute Notebook Cell and Insert Below"),
-			keybinding: {
-				when: NOTEBOOK_CELL_LIST_FOCUSED,
-				primary: KeyMod.Alt | KeyCode.Enter,
-				weight: NOTEBOOK_EDITOR_WIDGET_ACTION_WEIGHT
-			},
-		});
-	}
+// registerAction2(class ExecuteCellInsertBelow extends NotebookCellAction {
+// 	constructor() {
+// 		super({
+// 			id: EXECUTE_CELL_INSERT_BELOW,
+// 			precondition: ContextKeyExpr.or(executeThisCellCondition, NOTEBOOK_CELL_TYPE.isEqualTo('markup')),
+// 			title: localize('notebookActions.executeAndInsertBelow', "Execute Notebook Cell and Insert Below"),
+// 			keybinding: {
+// 				when: NOTEBOOK_CELL_LIST_FOCUSED,
+// 				primary: KeyMod.Alt | KeyCode.Enter,
+// 				weight: NOTEBOOK_EDITOR_WIDGET_ACTION_WEIGHT
+// 			},
+// 		});
+// 	}
 
-	async runWithContext(accessor: ServicesAccessor, context: INotebookCellActionContext): Promise<void> {
-		const editorGroupsService = accessor.get(IEditorGroupsService);
-		const idx = context.notebookEditor.getCellIndex(context.cell);
-		const languageService = accessor.get(ILanguageService);
-		const newFocusMode = context.cell.focusMode === CellFocusMode.Editor ? 'editor' : 'container';
+// 	async runWithContext(accessor: ServicesAccessor, context: INotebookCellActionContext): Promise<void> {
+// 		const editorGroupsService = accessor.get(IEditorGroupsService);
+// 		const idx = context.notebookEditor.getCellIndex(context.cell);
+// 		const languageService = accessor.get(ILanguageService);
+// 		const newFocusMode = context.cell.focusMode === CellFocusMode.Editor ? 'editor' : 'container';
 
-		const newCell = insertCell(languageService, context.notebookEditor, idx, context.cell.cellKind, 'below');
-		if (newCell) {
-			await context.notebookEditor.focusNotebookCell(newCell, newFocusMode);
-		}
+// 		const newCell = insertCell(languageService, context.notebookEditor, idx, context.cell.cellKind, 'below');
+// 		if (newCell) {
+// 			await context.notebookEditor.focusNotebookCell(newCell, newFocusMode);
+// 		}
 
-		if (context.cell.cellKind === CellKind.Markup) {
-			context.cell.updateEditState(CellEditState.Preview, EXECUTE_CELL_INSERT_BELOW);
-		} else {
-			runCell(editorGroupsService, context);
-		}
-	}
-});
+// 		if (context.cell.cellKind === CellKind.Markup) {
+// 			context.cell.updateEditState(CellEditState.Preview, EXECUTE_CELL_INSERT_BELOW);
+// 		} else {
+// 			runCell(editorGroupsService, context);
+// 		}
+// 	}
+// });
 
 class CancelNotebook extends NotebookAction {
 	override getEditorContextFromArgsOrActive(accessor: ServicesAccessor, context?: UriComponents): INotebookActionContext | undefined {
